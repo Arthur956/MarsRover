@@ -9,7 +9,7 @@ namespace MarsRover
 {
     public class Program
     {
- 
+
         public static void Main(string[] args)
         {
             Console.BackgroundColor = ConsoleColor.DarkRed; // mars :-)
@@ -21,10 +21,8 @@ namespace MarsRover
             Basisstation station = new Basisstation(mars.grootteX, mars.grootteY);
             InSight rover = new InSight();
 
-            GenerateWater Water = new GenerateWater();
+            //GenerateWater Water = new GenerateWater();
             Energie energie = new Energie();
-            int[] CoWaX = Water.GenerateX();
-            int[] CoWaY = Water.GenerateY();
             GenerateWater water = new GenerateWater(mars.grootteX, mars.grootteY);
 
             rover.ToonInSight();
@@ -33,7 +31,7 @@ namespace MarsRover
             //grens.test(rover);
             station.toonBasis();
             station.Laadstation(rover.posX, rover.posY, energie);
-            water.Plaats();
+            water.watergen();
 
 
             while (true)
@@ -59,9 +57,6 @@ namespace MarsRover
                         case ConsoleKey.T:
                             water.WaterZien();
                             break;
-                        case ConsoleKey.Y:
-                            water.WaterNietZien();
-                            break;
                         case ConsoleKey.Enter:
                             rover.boor(water.Plaats());
                             break;
@@ -71,9 +66,10 @@ namespace MarsRover
                     mars.toonMars();
                     mars.RotsenTonen();
                     station.toonBasis();
+                    rover.fuel();
                     rover.gevondenwater();
-
-
+                    water.WaterZienMap();
+                    station.Laadstation(rover.posX, rover.posY, energie);
 
                 }
             }
@@ -95,7 +91,7 @@ namespace MarsRover
 
         public InSight()
         {
-             F = new Energie();
+            F = new Energie();
         }
 
         public InSight(char symbool, ConsoleColor kleur)
@@ -119,8 +115,9 @@ namespace MarsRover
   
             if (posY < 19 && F.huidigverbruik() > 0)
             {
-              posY++;
-              F.verbruik(vpv);
+                posY++;
+                F.verbruik(vpv);
+
             }
         }
 
@@ -141,21 +138,27 @@ namespace MarsRover
 
             if (posX < 39 && F.huidigverbruik() > 0)
             {
-              posX++;
-              F.verbruik(vpv);
+
+                posX++;
+                F.verbruik(vpv);
             }
         }
-        
 
         public void ToonInSight()
         {
-            if (posX >= 0 && posY >= 0) 
+            if (posX >= 0 && posY >= 0)
             {
                 Console.ForegroundColor = kleur;
                 Console.SetCursorPosition(posX, posY);
                 Console.Write(symbool);
             }
         }
+
+        public void fuel()
+        {
+            F.huidigefuel();
+}
+
         //boren
         bool succes = false;
       //  char waterplas = '〰';
@@ -208,10 +211,12 @@ namespace MarsRover
     class Energie
     {
         private int fuel = 50;
-        public int verbruik(int F) {
+        public int verbruik(int F)
+        {
             fuel = fuel - F;
             return fuel;
         }
+
         public int huidigverbruik()
         {
             return fuel;
@@ -220,6 +225,11 @@ namespace MarsRover
         {
             fuel = 50;
 
+        }
+        public void huidigefuel()
+        {
+            Console.SetCursorPosition(45, 0); //test
+            Console.Write("Fuel : " + fuel);
         }
     }
     class Basisstation
@@ -241,7 +251,9 @@ namespace MarsRover
         public void toonBasis()
         {
             Console.SetCursorPosition(bposX, bposY);
-            Console.Write(symbool);
+            Console.BackgroundColor = ConsoleColor.Green;
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write(" ");
         }
 
 
@@ -252,9 +264,7 @@ namespace MarsRover
                 en.opladen();
             }
         }
-        //Wachtende op joris
-}
-
+    }
 }
 
 
